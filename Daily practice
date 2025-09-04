@@ -1,0 +1,131 @@
+package com.asg1;
+
+import java.util.Scanner;
+
+
+class TicketBooking {
+    private String stageEvent;
+    private String customer;
+    private int noOfSeats;
+
+    public TicketBooking(String stageEvent, String customer, int noOfSeats) {
+        this.stageEvent = stageEvent;
+        this.customer = customer;
+        this.noOfSeats = noOfSeats;
+    }
+
+    public String getStageEvent() {
+        return stageEvent;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public int getNoOfSeats() {
+        return noOfSeats;
+    }
+
+    public void displayDetails() {
+        System.out.println("Stage event:" + stageEvent);
+        System.out.println("Customer:" + customer);
+        System.out.println("Number of seats:" + noOfSeats);
+    }
+}
+
+abstract class Payment {
+    public abstract void makePayment();
+}
+
+class CashPayment extends Payment {
+    private double amount;
+
+    public CashPayment(double amount) {
+        this.amount = amount;
+    }
+
+    public void makePayment() {
+        System.out.printf("Amount %.1f paid in cash\n", amount);
+    }
+}
+
+class WalletPayment extends Payment {
+    private double amount;
+    private String walletNumber;
+
+    public WalletPayment(double amount, String walletNumber) {
+        this.amount = amount;
+        this.walletNumber = walletNumber;
+    }
+
+    public void makePayment() {
+        System.out.printf("Amount %.1f paid using wallet number %s\n", amount, walletNumber);
+    }
+}
+
+class CreditCardPayment extends Payment {
+    private String cardHolderName;
+    private double amount;
+    private String cardType;
+    private String ccv;
+
+    public CreditCardPayment(String cardHolderName, double amount, String cardType, String ccv) {
+        this.cardHolderName = cardHolderName;
+        this.amount = amount;
+        this.cardType = cardType;
+        this.ccv = ccv;
+    }
+
+    public void makePayment() {
+        System.out.println("Holder name:" + cardHolderName);
+        System.out.printf("Amount %.1f paid using %s card\n", amount, cardType);
+        System.out.println("CCV:" + ccv);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String[] input = sc.nextLine().split(",");
+        String stageEvent = input[0];
+        String customer = input[1];
+        int noOfSeats = Integer.parseInt(input[2]);
+
+        TicketBooking booking = new TicketBooking(stageEvent, customer, noOfSeats);
+
+        int choice = Integer.parseInt(sc.nextLine());
+
+        Payment payment = null;
+
+        switch (choice) {
+            case 1:
+                double cashAmount = Double.parseDouble(sc.nextLine());
+                payment = new CashPayment(cashAmount);
+                break;
+            case 2:
+                String[] walletInput = sc.nextLine().split(" ");
+                double walletAmount = Double.parseDouble(walletInput[0]);
+                String walletNumber = walletInput[1];
+                payment = new WalletPayment(walletAmount, walletNumber);
+                break;
+            case 3:
+                String name = sc.nextLine();
+                double cardAmount = Double.parseDouble(sc.nextLine());
+                String cardType = sc.nextLine();
+                String ccv = sc.nextLine();
+                payment = new CreditCardPayment(name, cardAmount, cardType, ccv);
+                break;
+            default:
+                System.out.println("Invalid choice");
+                return;
+        }
+
+        booking.displayDetails();
+        payment.makePayment();
+    }
+}
+
+
+
+
